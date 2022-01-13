@@ -47,11 +47,25 @@ class User extends Model
 }
 ```
 
+Don't forget to dump composer autoload
+
+```bash
+composer dump-autoload
+```
+
 ## Usage
 
+This package is extensively "borrowed" from the wonderful work of Marcel Pociot and the [Teamwork](https://github.com/mpociot/teamwork) package. You can get a full understanding of the capabilities by reviewing the [Teamwork docs](https://github.com/mpociot/teamwork#readme).
+
+### Custom Models & Resources
+
+You can use your own Team model and resource. After publishing the config, simply update the following settings:
+
 ```php
-$skeleton = new Jeffgreco13\FilamentTeams();
-echo $skeleton->echoPhrase("Hello, Jeffgreco13!");
+"team_model" => JeffGreco13\FilamentTeams\Models\FilamentTeam::class,
+...
+"team_resource" =>
+JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
 ```
 
 ## Testing

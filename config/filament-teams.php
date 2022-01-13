@@ -24,34 +24,27 @@ return [
     | The path to your Team model. Update this to extend or override the Team model.
     */
     "team_model" => JeffGreco13\FilamentTeams\Models\FilamentTeam::class,
-
+    /*
+    |--------------------------------------------------------------------------
+    | The teams table in your database.
+    */
+    "teams_table" => "teams",
+    /*
+    |--------------------------------------------------------------------------
+    | The team_user assoc. table in your database.
+    */
+    "team_user_table" => "team_user",
     /*
     |--------------------------------------------------------------------------
     | Set the path to the Filament Resource for your Team model. Change this to something like App\Filament\Resources\TeamResource::class to use your own resource object.
     */
-    "team_resource" => App\Filament\Resources\TeamResource::class,
+    "team_resource" =>
+        JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
+    /*
+    |--------------------------------------------------------------------------
+    | Update the Teams resource navigation icon.
+    */
     "team_navigation_icon" => "heroicon-o-user-group",
-
-    /*
-    |--------------------------------------------------------------------------
-    | Teams teams Table
-    |--------------------------------------------------------------------------
-    |
-    | This is the teams table name used by Teams to save teams to the database.
-    |
-    */
-    "teams_table" => "teams",
-
-    /*
-    |--------------------------------------------------------------------------
-    | Teams team_user Table
-    |--------------------------------------------------------------------------
-    |
-    | This is the team_user table used by Teams to save assigned teams to the
-    | database.
-    |
-    */
-    "team_user_table" => "team_user",
 
     /*
     |--------------------------------------------------------------------------
@@ -62,7 +55,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Teams Team Invite Model
+    | Teams Invitations
     |--------------------------------------------------------------------------
     |
     | This is the Team Invite model used by Teams to create correct relations.
@@ -70,15 +63,8 @@ return [
     |
     */
     "invite_model" => JeffGreco13\FilamentTeams\Models\TeamInvite::class,
-
     /*
-    |--------------------------------------------------------------------------
-    | Teams team invites Table
-    |--------------------------------------------------------------------------
-    |
-    | This is the team invites table name used by Teams to save sent/pending
-    | invitation into teams to the database.
-    |
+    | The team invitations table in your database.
     */
     "team_invites_table" => "team_invites",
 ];
