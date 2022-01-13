@@ -6,8 +6,6 @@
 
 This package is heavily influenced by the great work of Mpociot and Dharrin.
 
-## Support us
-
 ## Installation
 
 Install the package via composer:
@@ -16,10 +14,37 @@ Install the package via composer:
 composer require jeffgreco13/filament-teams
 ```
 
-Publish the config file and migration with:
+Publish the config file:
 
 ```bash
-php artisan vendor:publish --tag="filament-teams-config" && php artisan vendor:publish --tag="filament-teams-migrations"
+php artisan vendor:publish --tag="filament-teams-config"
+```
+
+Publish the migrations using:
+
+```bash
+php artisan vendor:publish --tag="filament-teams-migrations"
+```
+
+Adjust all `*_table` settings within the configuration file, as needed, or adjust the migration. Then run your migrations:
+
+```bash
+php artisan migrate
+```
+
+### User Model
+
+Add the `UserHasTeams` trait to your existing model:
+
+```php
+<?php namespace App;
+
+use JeffGreco13\FilamentTeams\Traits\UserHasTeams;
+
+class User extends Model
+{
+    use UserHasTeams; // Add this trait to your model
+}
 ```
 
 ## Usage
