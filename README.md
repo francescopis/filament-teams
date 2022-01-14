@@ -57,6 +57,16 @@ composer dump-autoload
 
 This package is extensively "borrowed" from the wonderful work of Marcel Pociot and the [Teamwork](https://github.com/mpociot/teamwork) package. You can get a full understanding of the capabilities by reviewing the [Teamwork docs](https://github.com/mpociot/teamwork#readme).
 
+Similar to the `Teamwork` facade, you can access the same methods in the following way:
+
+```php
+use JeffGreco13\FilamentTeams\FilamentTeams;
+
+Teamwork::inviteToTeam($email, $team, function ($invite) {
+    // Send email to user / let them know that they got invited
+});
+```
+
 ### Custom Models & Resources
 
 You can use your own Team model and resource. After publishing the config, simply update the following settings:
@@ -64,8 +74,7 @@ You can use your own Team model and resource. After publishing the config, simpl
 ```php
 "team_model" => JeffGreco13\FilamentTeams\Models\FilamentTeam::class,
 ...
-"team_resource" =>
-JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
+"team_resource" => JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
 ```
 
 ## Testing
