@@ -45,6 +45,11 @@ return [
     | Update the Teams resource navigation icon.
     */
     "team_navigation_icon" => "heroicon-o-user-group",
+    /*
+    |--------------------------------------------------------------------------
+    | When using Teams, the application will fail whenever current_team_id is null. This will find the next team assigned to the user, or abort with error 403 if no team is found. If you set this to false you will need to write your own logic.
+    */
+    "ensures_a_current_team" => true,
 
     /*
     |--------------------------------------------------------------------------

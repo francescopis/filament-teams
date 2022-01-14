@@ -18,9 +18,27 @@ trait UserHasTeams
      */
     public function teams()
     {
-        return $this->belongsToMany(config('filament-teams.team_model'), config('filament-teams.team_user_table'), 'user_id', 'team_id')->withTimestamps();
+        return $this->belongsToMany(
+            config("filament-teams.team_model"),
+            config("filament-teams.team_user_table"),
+            "user_id",
+            "team_id"
+        )->withTimestamps();
     }
-
+    /**
+     *
+     *  Ensure the current user has a current_team_id set. If not, find their next available team or return an error.
+     *
+     */
+    protected static function ensuresCurrentTeam()
+    {
+        $user = auth()->user();
+        if (is_null($user->current_team_id)) {
+            abort_unless($team = $user->teams()->first(), 403);
+            $user->current_team_id = $team->id;
+            $user->save();
+        }
+    }
     /**
      * has-one relation with the current selected team model.
      *
@@ -28,7 +46,14 @@ trait UserHasTeams
      */
     public function currentTeam()
     {
-        return $this->hasOne(config('filament-teams.team_model'), 'id', 'current_team_id');
+        if (config("filament-teams.ensures_a_current_team")) {
+            $this->ensuresCurrentTeam();
+        }
+        return $this->hasOne(
+            config("filament-teams.team_model"),
+            "id",
+            "current_team_id"
+        );
     }
 
     /**
@@ -36,7 +61,7 @@ trait UserHasTeams
      */
     public function ownedTeams()
     {
-        return $this->teams()->where('owner_id', '=', $this->getKey());
+        return $this->teams()->where("owner_id", "=", $this->getKey());
     }
 
     /**
@@ -45,7 +70,11 @@ trait UserHasTeams
      */
     public function invites()
     {
-        return $this->hasMany(config('filament-teams.invite_model'), 'email', 'email');
+        return $this->hasMany(
+            config("filament-teams.invite_model"),
+            "email",
+            "email"
+        );
     }
 
     /**
@@ -58,7 +87,12 @@ trait UserHasTeams
     public static function bootUserHasTeams()
     {
         static::deleting(function (Model $user) {
-            if (! method_exists(config('filament-teams.user_model'), 'bootSoftDeletes')) {
+            if (
+                !method_exists(
+                    config("filament-teams.user_model"),
+                    "bootSoftDeletes"
+                )
+            ) {
                 $user->teams()->sync([]);
             }
 
@@ -73,7 +107,11 @@ trait UserHasTeams
      */
     public function isOwner()
     {
-        return ($this->teams()->where('owner_id', '=', $this->getKey())->first()) ? true : false;
+        return $this->teams()
+            ->where("owner_id", "=", $this->getKey())
+            ->first()
+            ? true
+            : false;
     }
 
     /**
@@ -95,8 +133,8 @@ trait UserHasTeams
         if (is_object($team)) {
             $team = $team->getKey();
         }
-        if (is_array($team) && isset($team['id'])) {
-            $team = $team['id'];
+        if (is_array($team) && isset($team["id"])) {
+            $team = $team["id"];
         }
 
         return $team;
@@ -112,10 +150,12 @@ trait UserHasTeams
     {
         $team_id = $this->retrieveTeamId($team);
 
-        return ($this->teams()
-            ->where('owner_id', $this->getKey())
-            ->where('team_id', $team_id)->first()
-        ) ? true : false;
+        return $this->teams()
+            ->where("owner_id", $this->getKey())
+            ->where("team_id", $team_id)
+            ->first()
+            ? true
+            : false;
     }
 
     /**
@@ -136,21 +176,21 @@ trait UserHasTeams
             $this->current_team_id = $team;
             $this->save();
 
-            if ($this->relationLoaded('currentTeam')) {
-                $this->load('currentTeam');
+            if ($this->relationLoaded("currentTeam")) {
+                $this->load("currentTeam");
             }
         }
 
         // Reload relation
-        $this->load('teams');
+        $this->load("teams");
 
-        if (! $this->teams->contains($team)) {
+        if (!$this->teams->contains($team)) {
             $this->teams()->attach($team, $pivotData);
 
             event(new UserJoinedTeam($this, $team));
 
-            if ($this->relationLoaded('teams')) {
-                $this->load('teams');
+            if ($this->relationLoaded("teams")) {
+                $this->load("teams");
             }
         }
 
@@ -170,8 +210,8 @@ trait UserHasTeams
 
         event(new UserLeftTeam($this, $team));
 
-        if ($this->relationLoaded('teams')) {
-            $this->load('teams');
+        if ($this->relationLoaded("teams")) {
+            $this->load("teams");
         }
 
         /*
@@ -182,8 +222,8 @@ trait UserHasTeams
             $this->current_team_id = null;
             $this->save();
 
-            if ($this->relationLoaded('currentTeam')) {
-                $this->load('currentTeam');
+            if ($this->relationLoaded("currentTeam")) {
+                $this->load("currentTeam");
             }
         }
 
@@ -232,14 +272,14 @@ trait UserHasTeams
     {
         if ($team !== 0 && $team !== null) {
             $team = $this->retrieveTeamId($team);
-            $teamModel = config('filament-teams.team_model');
-            $teamObject = ( new $teamModel() )->find($team);
-            if (! $teamObject) {
+            $teamModel = config("filament-teams.team_model");
+            $teamObject = (new $teamModel())->find($team);
+            if (!$teamObject) {
                 $exception = new ModelNotFoundException();
                 $exception->setModel($teamModel);
                 throw $exception;
             }
-            if (! $teamObject->users->contains($this->getKey())) {
+            if (!$teamObject->users->contains($this->getKey())) {
                 $exception = new UserNotInTeamException();
                 $exception->setTeam($teamObject->name);
                 throw $exception;
@@ -248,8 +288,8 @@ trait UserHasTeams
         $this->current_team_id = $team;
         $this->save();
 
-        if ($this->relationLoaded('currentTeam')) {
-            $this->load('currentTeam');
+        if ($this->relationLoaded("currentTeam")) {
+            $this->load("currentTeam");
         }
 
         return $this;

@@ -12,6 +12,7 @@ class FilamentTeamsServiceProvider extends PluginServiceProvider
         $package
             ->name("filament-teams")
             ->hasConfigFile()
+            ->hasViews()
             ->hasMigration("create_filament_teams_tables");
     }
 
@@ -19,11 +20,15 @@ class FilamentTeamsServiceProvider extends PluginServiceProvider
     {
         if (
             config("filament-teams.team_resource") ===
-            \JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class
+            Resources\FilamentTeamResource::class
         ) {
             return [config("filament-teams.team_resource")];
         } else {
             return [];
         }
+    }
+    protected function getWidgets(): array
+    {
+        return [Widgets\FilamentTeamInvitations::class];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace JeffGreco13\FilamentTeams;
+namespace JeffGreco13\FilamentTeams\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use JeffGreco13\FilamentTeams\Traits\FilamentTeamInviteTrait;
