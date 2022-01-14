@@ -139,7 +139,24 @@ A few things to be aware of:
 1. When a User is deleted, this change does not cascade to `owner_id` on the Team model.
 1. The `current_team_id` value on the User model is not automatically set in any way. You are responsible for writing your own logic to control this.
 
-I've added some additional protections
+#### Middleware
+
+You can add the MustHaveAValidTeam middleware to your Filament config in the 'auth' array after Authenticate if you wish to force a user to have a valid team. The app will abort with error 403 if no valid team is found for the user. It will also attempt to find the next valid associated team for that user and set it as the current team.
+
+You can also add the TeamOwner middleware if you want to limit Filament access to Owners of teams only.
+
+If this doesn't quite fit your need, feel free to write your own middleware and include it here.
+
+```php
+"middleware" => [
+    "auth" => [
+        Authenticate::class,
+        \JeffGreco13\FilamentTeams\Middleware\MustHaveAValidTeam::class,
+        ...
+        \JeffGreco13\FilamentTeams\Middleware\TeamOwner::class,
+    ],
+    ...
+```
 
 ## Testing
 
