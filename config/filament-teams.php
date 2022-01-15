@@ -42,14 +42,16 @@ return [
         JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
     /*
     |--------------------------------------------------------------------------
-    | Update the Teams resource navigation icon.
+    | Update the Teams resource navigation details.
     */
+    "team_navigation_group" => "Filament Teams",
+    "team_navigation_label" => "Teams",
     "team_navigation_icon" => "heroicon-o-user-group",
     /*
     |--------------------------------------------------------------------------
-    | When using Teams, the application will fail whenever current_team_id is null. This will find the next team assigned to the user, or abort with error 403 if no team is found. If you set this to false you will need to write your own logic.
+    | When set to true, the association in team_users will be made automatically when the owner is saved. This helps ensure that owners will appear in all relationship methods.
     */
-    "ensures_a_current_team" => true,
+    "sync_owner_as_team_member" => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -68,6 +70,13 @@ return [
     |
     */
     "invite_model" => JeffGreco13\FilamentTeams\Models\TeamInvite::class,
+    /*
+    | Path to the invitations Filament widgets
+    */
+    "invitations_send_widget" =>
+        JeffGreco13\FilamentTeams\Widgets\FilamentTeamsSendInvites::class,
+    "invitations_manage_widget" =>
+        JeffGreco13\FilamentTeams\Widgets\ManageInvites::class,
     /*
     | The team invitations table in your database.
     */

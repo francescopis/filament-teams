@@ -58,12 +58,12 @@ composer dump-autoload
 
 This package is extensively "borrowed" from the wonderful work of Marcel Pociot and the [Teamwork](https://github.com/mpociot/teamwork) package. You can get a full understanding of the capabilities by reviewing the [Teamwork docs](https://github.com/mpociot/teamwork#readme).
 
-Similar to the `Teamwork` facade, you can access the same methods in the following way:
+Similar to the `Teamwork` facade, you can access the same methods in the following way throughout your application:
 
 ```php
 use JeffGreco13\FilamentTeams\FilamentTeams;
 
-Teamwork::inviteToTeam($email, $team, function ($invite) {
+FilamentTeams::inviteToTeam($email, $team, function ($invite) {
     // Send email to user / let them know that they got invited
 });
 ```
@@ -127,9 +127,10 @@ Then, simply update the path in your config file to override:
 "team_model" => JeffGreco13\FilamentTeams\Models\FilamentTeam::class,
 ...
 "team_resource" => JeffGreco13\FilamentTeams\Resources\FilamentTeamResource::class,
-...
-"invitations_widget" => JeffGreco13\FilamentTeams\Widgets\::class,
+... etc.
 ```
+
+The invitations_send_widget, by default, will only show to the current team's owner.
 
 ### Custom Configurations & Nuances
 
@@ -141,7 +142,7 @@ A few things to be aware of:
 
 #### Middleware
 
-You can add the MustHaveAValidTeam middleware to your Filament config in the 'auth' array after Authenticate if you wish to force a user to have a valid team. The app will abort with error 403 if no valid team is found for the user. It will also attempt to find the next valid associated team for that user and set it as the current team.
+You can add the EnsureValidTeam middleware to your Filament config in the 'auth' array after Authenticate if you wish to circumvent a potential security issue. If the `current_team_id` column is set on the User model but the User is no longer a member of that Team, it will still load that information (security flaw). This middleware will attempt to load the next available team or set `current_team_id` to null.
 
 You can also add the TeamOwner middleware if you want to limit Filament access to Owners of teams only.
 
@@ -151,7 +152,8 @@ If this doesn't quite fit your need, feel free to write your own middleware and 
 "middleware" => [
     "auth" => [
         Authenticate::class,
-        \JeffGreco13\FilamentTeams\Middleware\MustHaveAValidTeam::class,
+        ...
+        \JeffGreco13\FilamentTeams\Middleware\EnsureValidTeam::class,
         ...
         \JeffGreco13\FilamentTeams\Middleware\TeamOwner::class,
     ],

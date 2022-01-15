@@ -26,29 +26,12 @@ trait UserHasTeams
         )->withTimestamps();
     }
     /**
-     *
-     *  Ensure the current user has a current_team_id set. If not, find their next available team or return an error.
-     *
-     */
-    protected static function ensuresCurrentTeam()
-    {
-        $user = auth()->user();
-        if (is_null($user->current_team_id)) {
-            abort_unless($team = $user->teams()->first(), 403);
-            $user->current_team_id = $team->id;
-            $user->save();
-        }
-    }
-    /**
      * has-one relation with the current selected team model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function currentTeam()
     {
-        if (config("filament-teams.ensures_a_current_team")) {
-            $this->ensuresCurrentTeam();
-        }
         return $this->hasOne(
             config("filament-teams.team_model"),
             "id",
@@ -156,6 +139,11 @@ trait UserHasTeams
             ->first()
             ? true
             : false;
+    }
+
+    public function isOwnerOfCurrentTeam()
+    {
+        return $this->isOwnerOfTeam($this->currentTeam);
     }
 
     /**

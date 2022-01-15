@@ -26,12 +26,12 @@ class FilamentTeamResource extends Resource
 
     protected static function getNavigationGroup(): ?string
     {
-        return "Filament Teams";
+        return config("filament-teams.team_navigation_group");
     }
 
     protected static function getNavigationLabel(): string
     {
-        return "Teams";
+        return config("filament-teams.team_navigation_label");
     }
 
     public static function form(Form $form): Form
@@ -40,8 +40,14 @@ class FilamentTeamResource extends Resource
             Forms\Components\TextInput::make("name")
                 ->label("Team name")
                 ->required(),
+            Forms\Components\BelongsToSelect::make("owner_id")
+                ->searchable()
+                ->relationship("owner", "name"),
             Forms\Components\BelongsToManyMultiSelect::make("users")
                 ->label("Team users")
+                ->helperText(
+                    "No invitation emails will be sent by updating this value."
+                )
                 ->relationship("users", "name"),
         ]);
     }
@@ -49,7 +55,15 @@ class FilamentTeamResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([Tables\Columns\TextColumn::make("name")])
+            ->columns([
+                Tables\Columns\TextColumn::make("name"),
+                Tables\Columns\BadgeColumn::make("owner_id")
+                    ->label("Owner")
+                    ->colors(["success"])
+                    ->getStateUsing(
+                        fn($record) => $record->owner?->name
+                    ),
+            ])
             ->filters([
                 //
             ]);

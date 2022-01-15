@@ -29,6 +29,16 @@ class FilamentTeamsServiceProvider extends PluginServiceProvider
     }
     protected function getWidgets(): array
     {
-        return [Widgets\FilamentTeamInvitations::class];
+        if (
+            config("filament-teams.invitations_send_widget") ===
+            Widgets\FilamentTeamsSendInvites::class
+        ) {
+            return [
+                config("filament-teams.invitations_send_widget"),
+                config("filament-teams.invitations_manage_widget"),
+            ];
+        } else {
+            return [];
+        }
     }
 }
