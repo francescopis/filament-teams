@@ -1,5 +1,5 @@
 {
-    "name": "jeffgreco13/filament-teams",
+    "name": "francescopis/filament-teams",
     "description": "Team and User associations package for Filament.",
     "keywords": [
         "Jeff Greco",
@@ -19,7 +19,7 @@
     "require": {
         "php": "^8.0",
         "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "^8.73",
+        "illuminate/contracts": "^9",
         "filament/filament": "^2.0"
     },
     "require-dev": {
