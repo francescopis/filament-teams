@@ -14,7 +14,6 @@ class ManageInvites extends Widget
 
     public static function canView(): bool
     {
-        ray(empty(auth()->user()->invites));
         return !auth()
             ->user()
             ->invites->isEmpty();
@@ -22,7 +21,6 @@ class ManageInvites extends Widget
 
     protected function refreshInvites()
     {
-        ray("here");
         $this->currentTeamInvites = TeamInvite::whereEmail(
             auth()->user()->email
         )->get();
