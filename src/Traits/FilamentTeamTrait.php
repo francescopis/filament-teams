@@ -14,7 +14,7 @@ trait FilamentTeamTrait
     **/
     public static function bootFilamentTeamTrait()
     {
-        static::saving(function (Model $team) {
+        static::saved(function (Model $team) {
             // Only if the config is true and the user isn't already on the team.
             if (
                 config("filament-teams.sync_owner_as_team_member") &&
