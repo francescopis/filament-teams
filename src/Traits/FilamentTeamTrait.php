@@ -21,6 +21,7 @@ trait FilamentTeamTrait
                 !$team->hasUser($team->owner)
             ) {
                 $team->users()->syncWithoutDetaching($team->owner_id);
+                $team->owner->attachTeam($team);
             }
         });
     }
